@@ -1,0 +1,828 @@
+
+\documentclass[12pt,a4paper]{article}
+
+% =====================================================
+% PAQUETES
+% =====================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{caption}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.8cm,bottom=2.8cm}
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+% =====================================================
+% COLORES Y ESTILO
+% =====================================================
+\definecolor{azulUP}{RGB}{0,70,127}
+\definecolor{grisClaro}{RGB}{245,247,250}
+\definecolor{verde}{RGB}{0,120,80}
+\definecolor{morado}{RGB}{85,50,140}
+\definecolor{rojo}{RGB}{160,45,45}
+
+\titleformat{\section}{\Large\bfseries\color{azulUP}}{\thesection}{0.8em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries\color{azulUP}}{\thesubsection}{0.8em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{azulUP}}{\thesubsubsection}{0.8em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Calculo Estocastico}
+\rhead{Sofia Escamilla}
+\cfoot{\thepage}
+
+\tcbuselibrary{skins,breakable}
+
+\newtcolorbox{markdowncell}[1][]{
+  colback=grisClaro,
+  colframe=azulUP,
+  title=\textbf{Celda Markdown},
+  fonttitle=\bfseries\color{white},
+  colbacktitle=azulUP,
+  breakable,
+  #1
+}
+
+\newtcolorbox{latexcell}[1][]{
+  colback=white,
+  colframe=morado,
+  title=\textbf{Celda LaTeX / Desarrollo matematico},
+  fonttitle=\bfseries\color{white},
+  colbacktitle=morado,
+  breakable,
+  #1
+}
+
+\newtcolorbox{interpretacion}[1][]{
+  colback=verde!6,
+  colframe=verde,
+  title=\textbf{Interpretacion financiera},
+  fonttitle=\bfseries\color{white},
+  colbacktitle=verde,
+  breakable,
+  #1
+}
+
+\newtcolorbox{alerta}[1][]{
+  colback=rojo!5,
+  colframe=rojo,
+  title=\textbf{Nota importante},
+  fonttitle=\bfseries\color{white},
+  colbacktitle=rojo,
+  breakable,
+  #1
+}
+
+\lstdefinestyle{pythonstyle}{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{azulUP}\bfseries,
+    commentstyle=\color{verde!70!black},
+    stringstyle=\color{morado},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    framerule=0.3pt,
+    rulecolor=\color{azulUP!50},
+    backgroundcolor=\color{grisClaro},
+    tabsize=4,
+    columns=fullflexible
+}
+
+\lstdefinestyle{textstyle}{
+    basicstyle=\ttfamily\small,
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{grisClaro}
+}
+
+% =====================================================
+% DOCUMENTO
+% =====================================================
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    {\Large Universidad Panamericana \par}
+    \vspace{0.5cm}
+    {\large Licenciatura en Finanzas \par}
+    \vspace{2cm}
+    {\Huge\bfseries Notebook Documentado de Calculo Estocastico \par}
+    \vspace{0.5cm}
+    {\Large Movimiento Browniano Geometrico, Volatilidad, Monte Carlo, Opciones Americanas y Opciones Parisinas \par}
+    \vspace{2cm}
+    {\Large \textbf{Sofia Escamilla} \par}
+    \vfill
+    {\large Documento elaborado en formato \LaTeX{} con estructura de notebook para Google Colab \par}
+    {\large \today \par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% =====================================================
+\section{Objetivo del notebook}
+
+\begin{markdowncell}
+Este documento integra los materiales de \textbf{Calculo Estocastico aplicado a Finanzas} en un solo notebook documentado. 
+El objetivo es ordenar los laboratorios, ejercicios y proyecto final en una estructura compatible con Google Colab, combinando explicaciones en Markdown, desarrollo matematico en \LaTeX{} y bloques de codigo Python.
+
+Los documentos incluidos son: Laboratorio 1 de Movimiento Browniano Geometrico, Laboratorio 2 de Volatilidad Realizada, Laboratorio 3 de Monte Carlo, Laboratorio 4 de Longstaff-Schwartz, Laboratorio 5 de Opcion Parisina, ejercicios teoricos 15.18 a 15.20 y el Proyecto 5 de Opcion Americana mediante Arbol Binomial CRR.
+\end{markdowncell}
+
+\subsection{Archivos fuente integrados}
+
+\begin{longtable}{p{5cm}p{9cm}}
+\toprule
+\textbf{Archivo} & \textbf{Uso dentro del notebook} \\
+\midrule
+\endhead
+\texttt{Laboratorio\_1\_GBM.pdf} & Estimacion de un Movimiento Browniano Geometrico con datos de AAPL. \\
+\texttt{Laboratorio\_2\_Volatilidad.pdf} & Calculo de volatilidad realizada con ventanas moviles de 21, 63 y 126 dias. \\
+\texttt{Laboratorio\_3\_MonteCarlo.pdf} & Valuacion Monte Carlo de una opcion call europea y comparacion con Black-Scholes. \\
+\texttt{Laboratorio\_4\_LongstaffSchwartz.pdf} & Valuacion de una opcion put americana mediante Longstaff-Schwartz. \\
+\texttt{Laboratorio\_5\_Opcion\_Parisina.pdf} & Simulacion de una opcion call parisina down-and-out con reloj de barrera. \\
+\texttt{Ejercicios.pdf} & Ejercicios 15.18, 15.19 y 15.20 sobre put americana, opcion parisina y volatilidad historica vs implicita. \\
+\texttt{Opcion\_americana.html} & Proyecto 5 sobre opcion americana mediante arbol binomial CRR. \\
+\bottomrule
+\end{longtable}
+
+% =====================================================
+\section{Preparacion del ambiente en Google Colab}
+
+\begin{markdowncell}
+La primera parte del notebook prepara el entorno de trabajo. Se utilizan librerias para manejo de datos, simulacion numerica, graficas, distribuciones estadisticas y, opcionalmente, descarga de informacion financiera con \texttt{yfinance}.
+\end{markdowncell}
+
+\begin{lstlisting}[style=pythonstyle]
+# ==========================================
+# Instalacion de librerias
+# ==========================================
+!pip install yfinance scipy numpy pandas matplotlib --quiet
+
+# ==========================================
+# Importacion de paquetes
+# ==========================================
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import yfinance as yf
+
+from scipy.stats import norm
+from scipy.optimize import brentq
+
+import warnings
+warnings.filterwarnings("ignore")
+\end{lstlisting}
+
+\begin{markdowncell}
+Para reproducibilidad, se fija una semilla aleatoria. Esto permite que las simulaciones Monte Carlo entreguen resultados comparables cuando el notebook se vuelve a ejecutar.
+\end{markdowncell}
+
+\begin{lstlisting}[style=pythonstyle]
+np.random.seed(42)
+\end{lstlisting}
+
+% =====================================================
+\section{Marco teorico general}
+
+\subsection{Movimiento Browniano}
+
+\begin{markdowncell}
+El Movimiento Browniano es el proceso estocastico base para modelar incertidumbre continua en finanzas. Su papel central es representar cambios aleatorios acumulativos en el tiempo.
+\end{markdowncell}
+
+\begin{latexcell}
+Un proceso \(B_t\) es un Movimiento Browniano estandar si cumple:
+\[
+B_0 = 0,
+\]
+\[
+B_t - B_s \sim N(0,t-s), \qquad 0 \leq s < t,
+\]
+y sus incrementos son independientes.
+\end{latexcell}
+
+\subsection{Movimiento Browniano Geometrico}
+
+\begin{markdowncell}
+El Movimiento Browniano Geometrico (GBM) se utiliza para modelar precios financieros positivos. Es la base de Black-Scholes y de muchas simulaciones de trayectorias.
+\end{markdowncell}
+
+\begin{latexcell}
+La dinamica del activo bajo la medida fisica \(P\) se escribe como:
+\[
+dS_t = \mu S_t\,dt + \sigma S_t\,dB_t.
+\]
+Aplicando el Lema de Ito a \(\ln(S_t)\), se obtiene:
+\[
+d\ln(S_t)=\left(\mu-\frac{1}{2}\sigma^2\right)dt+\sigma dB_t.
+\]
+La solucion exacta discretizada es:
+\[
+S_{t+\Delta t}
+=
+S_t
+\exp\left[
+\left(\mu-\frac{1}{2}\sigma^2\right)\Delta t
++
+\sigma \sqrt{\Delta t}Z
+\right],
+\qquad Z\sim N(0,1).
+\]
+\end{latexcell}
+
+% =====================================================
+\section{Laboratorio 1: Estimacion de un GBM}
+
+\begin{markdowncell}
+El primer laboratorio estima los parametros de deriva \(\mu\) y volatilidad \(\sigma\) de un Movimiento Browniano Geometrico usando datos historicos de AAPL. Despues se simulan trayectorias futuras bajo la solucion exacta discretizada del modelo.
+\end{markdowncell}
+
+\subsection{Estimacion de parametros}
+
+\begin{latexcell}
+Los log-retornos se calculan como:
+\[
+r_t = \ln\left(\frac{S_t}{S_{t-1}}\right).
+\]
+Si \(\hat{m}\) es la media diaria de los log-retornos y \(\hat{s}\) su desviacion estandar diaria, entonces:
+\[
+\hat{\sigma}=\sqrt{252}\hat{s},
+\]
+\[
+\hat{\mu}=252\hat{m}+\frac{1}{2}\hat{\sigma}^2.
+\]
+\end{latexcell}
+
+\begin{lstlisting}[style=pythonstyle]
+# Descarga de precios de AAPL
+ticker = "AAPL"
+prices = yf.download(ticker, start="2021-01-01", end="2024-01-01", progress=False)["Close"].dropna()
+
+# Log-retornos
+log_returns = np.log(prices / prices.shift(1)).dropna()
+
+# Estimacion de parametros anualizados
+m_hat = log_returns.mean()
+s_hat = log_returns.std()
+
+sigma_hat = np.sqrt(252) * s_hat
+mu_hat = 252 * m_hat + 0.5 * sigma_hat**2
+
+print("Media diaria:", m_hat)
+print("Volatilidad anual estimada:", sigma_hat)
+print("Deriva anual estimada:", mu_hat)
+\end{lstlisting}
+
+\subsection{Simulacion de trayectorias}
+
+\begin{lstlisting}[style=pythonstyle]
+# Parametros de simulacion
+S0 = float(prices.iloc[-1])
+T = 1
+n_steps = 252
+n_sims = 100
+dt = T / n_steps
+
+# Matriz de trayectorias
+paths = np.zeros((n_steps + 1, n_sims))
+paths[0, :] = S0
+
+for t in range(1, n_steps + 1):
+    Z = np.random.normal(size=n_sims)
+    paths[t, :] = paths[t-1, :] * np.exp(
+        (mu_hat - 0.5 * sigma_hat**2) * dt + sigma_hat * np.sqrt(dt) * Z
+    )
+
+plt.figure(figsize=(12, 6))
+plt.plot(paths, alpha=0.45)
+plt.title("Simulacion futura de GBM para AAPL")
+plt.xlabel("Dias")
+plt.ylabel("Precio simulado")
+plt.grid(True)
+plt.show()
+\end{lstlisting}
+
+\begin{interpretacion}
+En el laboratorio se obtuvo una deriva anual aproximada de \(0.1776\) y una volatilidad anual aproximada de \(0.2777\). La dispersion de las trayectorias aumenta conforme crece el horizonte temporal, lo cual es consistente con la acumulacion de incertidumbre en un proceso browniano.
+\end{interpretacion}
+
+% =====================================================
+\section{Laboratorio 2: Volatilidad realizada y ventanas moviles}
+
+\begin{markdowncell}
+El segundo laboratorio estima la volatilidad realizada usando ventanas moviles de 21, 63 y 126 dias. La finalidad es observar como cambia el riesgo en el tiempo y detectar clustering de volatilidad.
+\end{markdowncell}
+
+\begin{latexcell}
+La volatilidad realizada anualizada en una ventana de tamano \(n\) se calcula como:
+\[
+\sigma_t = std(r_{t-n+1},\ldots,r_t)\sqrt{252}.
+\]
+\end{latexcell}
+
+\begin{lstlisting}[style=pythonstyle]
+# Ventanas moviles de volatilidad realizada
+vol_21 = log_returns.rolling(21).std() * np.sqrt(252)
+vol_63 = log_returns.rolling(63).std() * np.sqrt(252)
+vol_126 = log_returns.rolling(126).std() * np.sqrt(252)
+
+plt.figure(figsize=(12, 6))
+plt.plot(vol_21, label="21 dias")
+plt.plot(vol_63, label="63 dias")
+plt.plot(vol_126, label="126 dias")
+plt.title("Volatilidad realizada anualizada")
+plt.xlabel("Fecha")
+plt.ylabel("Volatilidad anualizada")
+plt.legend()
+plt.grid(True)
+plt.show()
+\end{lstlisting}
+
+\begin{interpretacion}
+La ventana de 21 dias reacciona mas rapido ante cambios recientes, pero tambien es mas ruidosa. La ventana de 126 dias suaviza el comportamiento y muestra mejor la tendencia general del riesgo. La presencia de periodos donde la volatilidad alta se mantiene por varios dias es evidencia de clustering de volatilidad.
+\end{interpretacion}
+
+% =====================================================
+\section{Laboratorio 3: Valuacion Monte Carlo de una opcion europea}
+
+\begin{markdowncell}
+El tercer laboratorio valua una opcion call europea mediante simulacion Monte Carlo bajo medida neutral al riesgo \(Q\), y compara el resultado con la formula cerrada de Black-Scholes.
+\end{markdowncell}
+
+\subsection{Dinamica neutral al riesgo}
+
+\begin{latexcell}
+Bajo la medida neutral al riesgo \(Q\), el activo sigue:
+\[
+dS_t = rS_t\,dt+\sigma S_t\,dB_t^Q.
+\]
+El precio terminal se simula como:
+\[
+S_T = S_0\exp\left[
+\left(r-\frac{1}{2}\sigma^2\right)T+\sigma\sqrt{T}Z
+\right].
+\]
+El precio de una call europea se obtiene como:
+\[
+C_0 = e^{-rT}E^Q[\max(S_T-K,0)].
+\]
+\end{latexcell}
+
+\begin{lstlisting}[style=pythonstyle]
+# Parametros de la opcion europea
+S0 = float(prices.iloc[-1])
+K = 200
+r = 0.05
+T = 1
+sigma = float(sigma_hat)
+N = 100000
+
+Z = np.random.normal(size=N)
+ST = S0 * np.exp((r - 0.5 * sigma**2) * T + sigma * np.sqrt(T) * Z)
+
+payoffs = np.maximum(ST - K, 0)
+price_mc = np.exp(-r * T) * np.mean(payoffs)
+se_mc = np.std(np.exp(-r*T)*payoffs) / np.sqrt(N)
+
+ci_low = price_mc - 1.96 * se_mc
+ci_high = price_mc + 1.96 * se_mc
+
+print("Precio Monte Carlo:", price_mc)
+print("Error estandar:", se_mc)
+print("IC 95%:", ci_low, ci_high)
+\end{lstlisting}
+
+\subsection{Black-Scholes}
+
+\begin{latexcell}
+La formula de Black-Scholes para una call europea es:
+\[
+C = S_0N(d_1)-Ke^{-rT}N(d_2),
+\]
+donde:
+\[
+d_1=
+\frac{\ln(S_0/K)+(r+\frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}},
+\]
+\[
+d_2=d_1-\sigma\sqrt{T}.
+\]
+\end{latexcell}
+
+\begin{lstlisting}[style=pythonstyle]
+def black_scholes_call(S0, K, r, sigma, T):
+    d1 = (np.log(S0 / K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
+    d2 = d1 - sigma * np.sqrt(T)
+    return S0 * norm.cdf(d1) - K * np.exp(-r*T) * norm.cdf(d2)
+
+price_bs = black_scholes_call(S0, K, r, sigma, T)
+
+print("Precio Black-Scholes:", price_bs)
+print("Diferencia absoluta:", abs(price_mc - price_bs))
+\end{lstlisting}
+
+\begin{interpretacion}
+Monte Carlo y Black-Scholes deben producir precios cercanos porque ambos se basan en la misma dinamica GBM bajo medida neutral al riesgo. La diferencia proviene del error estadistico de la simulacion.
+\end{interpretacion}
+
+% =====================================================
+\section{Laboratorio 4: Opcion americana con Longstaff-Schwartz}
+
+\begin{markdowncell}
+El cuarto laboratorio aproxima el valor de una opcion put americana usando el algoritmo de Longstaff-Schwartz. La idea central es estimar el valor de continuacion mediante regresion hacia atras.
+\end{markdowncell}
+
+\subsection{Regla de ejercicio}
+
+\begin{latexcell}
+En cada fecha intermedia se compara:
+\[
+\text{Ejercicio inmediato}=K-S_t
+\]
+contra:
+\[
+\text{Valor de continuacion}=E^Q[e^{-r\Delta t}V_{t+\Delta t}\mid S_t].
+\]
+La opcion americana se valua como:
+\[
+V_t^{Am}=\max(K-S_t,\;C_t),
+\]
+donde \(C_t\) es el valor de continuacion estimado.
+\end{latexcell}
+
+\subsection{Regresion de Longstaff-Schwartz}
+
+\begin{latexcell}
+El valor de continuacion se aproxima con una base polinomial:
+\[
+F(S_t)=\beta_0+\beta_1S_t+\beta_2S_t^2.
+\]
+\end{latexcell}
+
+\begin{lstlisting}[style=pythonstyle]
+def longstaff_schwartz_put(S0, K, r, sigma, T, n_steps=252, n_sims=50000):
+    dt = T / n_steps
+    discount = np.exp(-r * dt)
+
+    # Simulacion de trayectorias bajo Q
+    S = np.zeros((n_steps + 1, n_sims))
+    S[0, :] = S0
+
+    for t in range(1, n_steps + 1):
+        Z = np.random.normal(size=n_sims)
+        S[t, :] = S[t-1, :] * np.exp((r - 0.5*sigma**2)*dt + sigma*np.sqrt(dt)*Z)
+
+    # Payoff terminal
+    cashflows = np.maximum(K - S[-1, :], 0)
+
+    # Induccion hacia atras
+    for t in range(n_steps - 1, 0, -1):
+        itm = np.where(K - S[t, :] > 0)[0]
+
+        if len(itm) > 0:
+            X = S[t, itm]
+            Y = cashflows[itm] * discount
+
+            # Regresion polinomial de grado 2
+            coeffs = np.polyfit(X, Y, deg=2)
+            continuation = np.polyval(coeffs, X)
+            exercise = K - X
+
+            exercise_now = exercise > continuation
+            ex_idx = itm[exercise_now]
+            cashflows[ex_idx] = exercise[exercise_now]
+
+        cashflows *= discount
+
+    price = np.mean(cashflows)
+    se = np.std(cashflows) / np.sqrt(n_sims)
+    return price, se
+
+price_lsm, se_lsm = longstaff_schwartz_put(S0, K, r, sigma, T)
+print("Put americana Longstaff-Schwartz:", price_lsm)
+print("Error estandar:", se_lsm)
+\end{lstlisting}
+
+\begin{interpretacion}
+La prima por ejercicio temprano surge porque una put americana permite ejercer antes del vencimiento. Si el activo cae mucho por debajo del strike, puede ser optimo recibir \(K-S_t\) antes y reinvertir ese flujo a la tasa libre de riesgo.
+\end{interpretacion}
+
+% =====================================================
+\section{Laboratorio 5: Opcion parisina y reloj de barrera}
+
+\begin{markdowncell}
+El quinto laboratorio simula una opcion call europea con barrera parisina down-and-out. La opcion se desactiva solo si el precio permanece por debajo de una barrera \(H\) durante \(D\) dias consecutivos.
+\end{markdowncell}
+
+\begin{latexcell}
+La condicion de desactivacion es:
+\[
+S_t < H
+\]
+durante al menos \(D\) periodos consecutivos.
+Si el activo vuelve por encima de la barrera antes de alcanzar \(D\), el reloj se reinicia.
+\end{latexcell}
+
+\begin{lstlisting}[style=pythonstyle]
+def parisian_down_and_out_call(S0, K, H, r, sigma, T, D, n_steps=252, n_sims=50000):
+    dt = T / n_steps
+    discount = np.exp(-r*T)
+
+    S = np.zeros((n_steps + 1, n_sims))
+    S[0, :] = S0
+
+    clock = np.zeros(n_sims)
+    knocked_out = np.zeros(n_sims, dtype=bool)
+
+    for t in range(1, n_steps + 1):
+        Z = np.random.normal(size=n_sims)
+        S[t, :] = S[t-1, :] * np.exp((r - 0.5*sigma**2)*dt + sigma*np.sqrt(dt)*Z)
+
+        below = S[t, :] < H
+        clock[below] += 1
+        clock[~below] = 0
+
+        knocked_out = knocked_out | (clock >= D)
+
+    payoff = np.where(knocked_out, 0, np.maximum(S[-1, :] - K, 0))
+    price = discount * np.mean(payoff)
+    survival_prob = 1 - knocked_out.mean()
+    knockout_prob = knocked_out.mean()
+
+    return price, survival_prob, knockout_prob
+
+H = 0.90 * S0
+D_values = [1, 5, 10, 21, 42, 63]
+
+results = []
+for D in D_values:
+    price, survival, knockout = parisian_down_and_out_call(S0, K, H, r, sigma, T, D)
+    results.append([D, price, survival, knockout])
+
+pd.DataFrame(results, columns=["D", "Precio", "Prob_Supervivencia", "Prob_Knockout"])
+\end{lstlisting}
+
+\begin{interpretacion}
+Cuando \(D\) es pequeno, es mas facil que la opcion se desactive, por lo que el precio es menor. A medida que \(D\) aumenta, se vuelve mas dificil acumular suficientes dias consecutivos debajo de la barrera, por lo que la probabilidad de supervivencia aumenta y el precio de la opcion tambien.
+\end{interpretacion}
+
+% =====================================================
+\section{Ejercicios 15.18 a 15.20}
+
+\subsection{Ejercicio 15.18: Frontera de ejercicio en una put americana}
+
+\begin{markdowncell}
+Una put americana puede ejercerse antes del vencimiento. Su valor se define como el maximo entre ejercer hoy o continuar.
+\end{markdowncell}
+
+\begin{latexcell}
+\[
+V(t,S)=\max(K-S,\; \text{valor de continuar}).
+\]
+Existe una frontera critica \(S^*(t)\) tal que:
+\[
+S<S^*(t) \Rightarrow \text{ejercer},
+\]
+\[
+S>S^*(t) \Rightarrow \text{continuar}.
+\]
+En la frontera:
+\[
+V(t,S^*(t))=K-S^*(t).
+\]
+\end{latexcell}
+
+\begin{interpretacion}
+Para una put americana, precios bajos del subyacente hacen mas atractivo ejercer porque la opcion esta muy in-the-money. Precios altos hacen mas atractivo esperar porque todavia existe valor temporal.
+\end{interpretacion}
+
+\subsection{Ejercicio 15.19: Sensibilidad de una opcion parisina}
+
+\begin{latexcell}
+Si la barrera \(H\) aumenta, la barrera queda mas cerca del precio actual:
+\[
+H \uparrow \Rightarrow \text{mayor probabilidad de knockout}.
+\]
+Por lo tanto:
+\[
+H \uparrow \Rightarrow \text{precio de la opcion disminuye}.
+\]
+Si el tiempo minimo \(D\) aumenta:
+\[
+D \uparrow \Rightarrow \text{knockout mas dificil}.
+\]
+Entonces:
+\[
+D \uparrow \Rightarrow \text{precio de la opcion aumenta}.
+\]
+\end{latexcell}
+
+\subsection{Ejercicio 15.20: Volatilidad historica vs volatilidad implicita}
+
+\begin{latexcell}
+La volatilidad historica se estima con retornos observados:
+\[
+R_t=\ln\left(\frac{S_t}{S_{t-1}}\right),
+\]
+\[
+\sigma_{hist}=\sqrt{Var(R_t)}.
+\]
+La volatilidad implicita se obtiene del precio de mercado de una opcion:
+\[
+C_{BS}(S,K,r,\sigma,T)=C_{mercado}.
+\]
+La \(\sigma\) que iguala el precio teorico con el precio observado es la volatilidad implicita:
+\[
+\sigma=\sigma_{impl}.
+\]
+\end{latexcell}
+
+% =====================================================
+\section{Proyecto 5: Opcion americana mediante arbol binomial CRR}
+
+\begin{markdowncell}
+El proyecto final desarrolla la valuacion de una opcion put europea y americana mediante el modelo binomial Cox-Ross-Rubinstein (CRR). La diferencia principal es que la opcion americana permite ejercicio anticipado en cada nodo.
+\end{markdowncell}
+
+\subsection{Parametros del arbol}
+
+\begin{latexcell}
+El tiempo al vencimiento \(T\) se divide en \(N\) pasos:
+\[
+\Delta t = \frac{T}{N}.
+\]
+Los factores de subida y bajada son:
+\[
+u=e^{\sigma\sqrt{\Delta t}},
+\]
+\[
+d=e^{-\sigma\sqrt{\Delta t}}=\frac{1}{u}.
+\]
+La probabilidad neutral al riesgo es:
+\[
+p=\frac{e^{r\Delta t}-d}{u-d}.
+\]
+El factor de descuento por paso es:
+\[
+disc=e^{-r\Delta t}.
+\]
+\end{latexcell}
+
+\subsection{Backward induction}
+
+\begin{latexcell}
+Al vencimiento, el payoff de una put es:
+\[
+V_{N,j}=\max(K-S_{N,j},0).
+\]
+Para una put europea:
+\[
+V_{i,j}^{Eu}=e^{-r\Delta t}\left[pV_{i+1,j+1}+(1-p)V_{i+1,j}\right].
+\]
+Para una put americana:
+\[
+V_{i,j}^{Am}=\max\left(K-S_{i,j},\; e^{-r\Delta t}\left[pV_{i+1,j+1}+(1-p)V_{i+1,j}\right]\right).
+\]
+\end{latexcell}
+
+\begin{lstlisting}[style=pythonstyle]
+def binomial_put_crr(S0, K, r, sigma, T, N, american=False):
+    dt = T / N
+    u = np.exp(sigma * np.sqrt(dt))
+    d = np.exp(-sigma * np.sqrt(dt))
+    p = (np.exp(r * dt) - d) / (u - d)
+    disc = np.exp(-r * dt)
+
+    # Arbol de precios
+    S = np.zeros((N + 1, N + 1))
+    for i in range(N + 1):
+        for j in range(i + 1):
+            S[i, j] = S0 * (u**j) * (d**(i-j))
+
+    # Payoff terminal
+    V = np.zeros((N + 1, N + 1))
+    for j in range(N + 1):
+        V[N, j] = max(K - S[N, j], 0)
+
+    # Induccion hacia atras
+    for i in range(N - 1, -1, -1):
+        for j in range(i + 1):
+            continuation = disc * (p * V[i+1, j+1] + (1-p) * V[i+1, j])
+            if american:
+                exercise = max(K - S[i, j], 0)
+                V[i, j] = max(exercise, continuation)
+            else:
+                V[i, j] = continuation
+
+    return V[0, 0], S, V
+
+# Parametros del proyecto
+S0_proj = 50
+K_proj = 52
+r_proj = 0.05
+sigma_proj = 0.30
+T_proj = 1
+N_proj = 3
+
+put_eu, tree_S, tree_V_eu = binomial_put_crr(S0_proj, K_proj, r_proj, sigma_proj, T_proj, N_proj, american=False)
+put_am, tree_S, tree_V_am = binomial_put_crr(S0_proj, K_proj, r_proj, sigma_proj, T_proj, N_proj, american=True)
+
+print("Put europea:", put_eu)
+print("Put americana:", put_am)
+print("Prima por ejercicio temprano:", put_am - put_eu)
+\end{lstlisting}
+
+\begin{interpretacion}
+La put americana debe valer al menos lo mismo que la put europea:
+\[
+P_{Am}\geq P_{Eu}.
+\]
+La diferencia entre ambas se llama prima por ejercicio temprano y representa el valor de la flexibilidad de ejercer antes del vencimiento.
+\end{interpretacion}
+
+% =====================================================
+\section{Resumen comparativo de laboratorios}
+
+\begin{longtable}{p{3cm}p{5cm}p{6cm}}
+\toprule
+\textbf{Modulo} & \textbf{Modelo principal} & \textbf{Idea central} \\
+\midrule
+\endhead
+Laboratorio 1 & GBM & Estimar \(\mu\) y \(\sigma\) para simular precios futuros. \\
+Laboratorio 2 & Volatilidad realizada & Medir riesgo con ventanas moviles y detectar clustering. \\
+Laboratorio 3 & Monte Carlo y Black-Scholes & Valuar una call europea bajo medida neutral al riesgo. \\
+Laboratorio 4 & Longstaff-Schwartz & Aproximar el valor de una put americana mediante regresion hacia atras. \\
+Laboratorio 5 & Opcion Parisina & Incorporar memoria temporal mediante un reloj de barrera. \\
+Ejercicios & Frontera libre, barrera y volatilidad implicita & Interpretar decisiones de ejercicio y sensibilidad de derivados. \\
+Proyecto 5 & Arbol binomial CRR & Valuar opcion europea y americana mediante backward induction. \\
+\bottomrule
+\end{longtable}
+
+% =====================================================
+\section{Conclusiones}
+
+\begin{interpretacion}
+El conjunto de laboratorios muestra una ruta completa de aplicacion de Calculo Estocastico a Finanzas. Primero se modela el precio del activo con Movimiento Browniano Geometrico y se estima su volatilidad. Despues se utiliza esa dinamica para valuar derivados mediante Monte Carlo, Black-Scholes, Longstaff-Schwartz y arboles binomiales.
+
+La parte mas importante es entender que cada modelo responde a una necesidad distinta. GBM permite simular trayectorias; la volatilidad realizada mide riesgo observado; Monte Carlo aproxima valores esperados bajo incertidumbre; Black-Scholes da una solucion cerrada para opciones europeas; Longstaff-Schwartz aproxima decisiones de ejercicio anticipado; y las opciones parisinas agregan dependencia de trayectoria mediante memoria temporal.
+
+En conjunto, el notebook documenta los principales metodos numericos y probabilisticos usados en Finanzas Cuantitativas para valorar derivados y analizar riesgo.
+\end{interpretacion}
+
+% =====================================================
+\section{Referencias}
+
+\begin{itemize}
+    \item Black, F. y Scholes, M. (1973). \textit{The Pricing of Options and Corporate Liabilities}.
+    \item Cox, J., Ross, S. y Rubinstein, M. (1979). \textit{Option Pricing: A Simplified Approach}.
+    \item Hull, J. C. \textit{Options, Futures, and Other Derivatives}.
+    \item Shreve, S. \textit{Stochastic Calculus for Finance II}.
+    \item Longstaff, F. y Schwartz, E. (2001). \textit{Valuing American Options by Simulation}.
+    \item Documentos fuente proporcionados: \texttt{Laboratorio\_1\_GBM.pdf}, \texttt{Laboratorio\_2\_Volatilidad.pdf}, \texttt{Laboratorio\_3\_MonteCarlo.pdf}, \texttt{Laboratorio\_4\_LongstaffSchwartz.pdf}, \texttt{Laboratorio\_5\_Opcion\_Parisina.pdf}, \texttt{Ejercicios.pdf}, \texttt{Opcion\_americana.html}.
+\end{itemize}
+
+% =====================================================
+\appendix
+\section{Apéndice: checklist para ejecutar en Colab}
+
+\begin{enumerate}
+    \item Instalar librerias: \texttt{yfinance}, \texttt{numpy}, \texttt{pandas}, \texttt{matplotlib}, \texttt{scipy}.
+    \item Descargar precios de AAPL.
+    \item Calcular log-retornos.
+    \item Estimar \(\hat{\mu}\) y \(\hat{\sigma}\).
+    \item Simular trayectorias GBM.
+    \item Calcular volatilidad realizada con ventanas 21, 63 y 126 dias.
+    \item Valuar una call europea con Monte Carlo.
+    \item Comparar contra Black-Scholes.
+    \item Valuar una put americana con Longstaff-Schwartz.
+    \item Simular una opcion parisina con reloj de barrera.
+    \item Construir un arbol binomial CRR.
+    \item Comparar put europea vs put americana.
+    \item Interpretar prima por ejercicio temprano.
+\end{enumerate}
+
+\end{document}
